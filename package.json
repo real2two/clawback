@@ -1,0 +1,39 @@
+{
+  "name": "interaction-handler",
+  "version": "0.0.0",
+  "description": "A new type of interaction command handler for Discord bots.",
+  "author": "Two",
+  "main": "./dist/index.cjs",
+  "types": "./dist/index.d.ts",
+  "license": "MIT",
+  "scripts": {
+    "build": "unbuild",
+    "format": "biome format --write ./"
+  },
+  "files": ["dist", "package.json"],
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "unbuild": "^3.5.0"
+  },
+  "homepage": "https://github.com/real2two/entity-handler",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/real2two/httpi.git",
+    "directory": "packages/client"
+  },
+  "bugs": {
+    "url": "https://github.com/real2two/httpi/issues"
+  },
+  "dependencies": {
+    "discord-api-types": "^0.37.119"
+  },
+  "pnpm": {
+    "ignoredBuiltDependencies": ["@biomejs/biome", "esbuild"]
+  }
+}
