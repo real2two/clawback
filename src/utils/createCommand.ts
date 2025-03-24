@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType, ApplicationCommandType, ApplicationIntegrationType, InteractionContextType } from "discord-api-types/v10";
 import { createOption, createSubcommandGroupOption, createSubcommandOption } from "./createOption";
-import { BaseInteraction, BaseInteractionType } from "../structures/BaseInteraction";
+import { Entity, EntityType } from "../structures/Entity";
 import type { LocalizationMap, RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types/v10";
 import type { SubcommandAndGroupBuilder, SubcommandAndGroup, OptionBuilder, Option } from "../types/options";
 
@@ -21,7 +21,7 @@ type SubcommandGroupKeys<T> = {
 }[keyof T];
 
 export function createCommand<T extends ApplicationCommandType>(type: T) {
-  return class Command<O extends Record<string, Option> = {}, S extends Record<string, SubcommandAndGroup> = {}> extends BaseInteraction {
+  return class Command<O extends Record<string, Option> = {}, S extends Record<string, SubcommandAndGroup> = {}> extends Entity {
     type = type;
     name: string;
     name_localizations?: LocalizationMap;
@@ -74,7 +74,7 @@ export function createCommand<T extends ApplicationCommandType>(type: T) {
           subcommands?: undefined;
         }
     )) {
-      super(BaseInteractionType.Command);
+      super(EntityType.Command);
 
       this.name = name;
       this.name_localizations = name_localizations;

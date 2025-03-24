@@ -10,7 +10,8 @@ export const d = {
   component: createComponent(),
 };
 
-/** Interaction handler */
+/** Interaction and interaction handler */
+export { Interaction } from "./structures/Interaction";
 export { InteractionHandler } from "./structures/InteractionHandler";
 
 /** Register commands to Discord */

@@ -1,10 +1,10 @@
-import { BaseInteraction, BaseInteractionType } from "../structures/BaseInteraction";
+import { Entity, EntityType } from "../structures/Entity";
 
 export function createComponent() {
-  return class Component extends BaseInteraction {
+  return class Component extends Entity {
     customId: string | RegExp;
     constructor({ customId }: { customId: Component["customId"] }) {
-      super(BaseInteractionType.Component);
+      super(EntityType.Component);
       this.customId = customId;
     }
   };
