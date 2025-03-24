@@ -3,6 +3,22 @@ import { createOption, createSubcommandGroupOption, createSubcommandOption } fro
 import type { LocalizationMap, RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types/v10";
 import type { SubcommandAndGroupBuilder, SubcommandAndGroup, OptionBuilder, Option } from "../types/options";
 
+type SubcommandKeys<T> = {
+  [K in keyof T]: T[K] extends {
+    type: ApplicationCommandOptionType.Subcommand;
+  }
+    ? K
+    : never;
+}[keyof T];
+
+type SubcommandGroupKeys<T> = {
+  [K in keyof T]: T[K] extends {
+    type: ApplicationCommandOptionType.SubcommandGroup;
+  }
+    ? K
+    : never;
+}[keyof T];
+
 export function createCommand<T extends ApplicationCommandType>(type: T) {
   return <O extends Record<string, Option> = {}, S extends Record<string, SubcommandAndGroup> = {}>({
     name,
@@ -83,12 +99,20 @@ export function createCommand<T extends ApplicationCommandType>(type: T) {
       integration_types,
       contexts,
 
-      subcommand<K extends keyof S>(name: K) {
+      subcommand(name: SubcommandKeys<S>) {
         const subcommand = parsedSubcommands?.[name];
-        if (!subcommand) {
-          throw new Error("Failed to find subcommand or subcommand group provided to the subcommand function!");
+        if (subcommand?.type !== ApplicationCommandOptionType.Subcommand) {
+          throw new Error("Failed to find subcommand provided to the subcommand function!");
         }
         return subcommand;
+      },
+
+      group(name: SubcommandGroupKeys<S>) {
+        const group = parsedSubcommands?.[name];
+        if (group?.type !== ApplicationCommandOptionType.SubcommandGroup) {
+          throw new Error("Failed to find subcommand provided to the subcommand group function!");
+        }
+        return group;
       },
 
       serialize(): RESTPostAPIApplicationCommandsJSONBody {

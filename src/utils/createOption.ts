@@ -93,6 +93,13 @@ export function createSubcommandGroupOption() {
     return {
       type,
       data,
+      subcommand<K extends keyof S>(name: K) {
+        const subcommand = parsedSubcommands?.[name];
+        if (!subcommand) {
+          throw new Error("Failed to find subcommand provided to the subcommand function!");
+        }
+        return subcommand;
+      },
       serialize: () => {
         const copiedData = { ...data };
         delete copiedData["subcommands"];
