@@ -1,5 +1,5 @@
 {
-  "name": "interaction-handler",
+  "name": "clawback",
   "version": "0.0.0",
   "description": "A new type of interaction command handler for Discord bots.",
   "author": "Two",
@@ -17,21 +17,21 @@
       "require": "./dist/index.cjs"
     }
   },
+  "dependencies": {
+    "discord-api-types": "^0.37.119"
+  },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "unbuild": "^3.5.0"
   },
-  "homepage": "https://github.com/real2two/entity-handler",
+  "homepage": "https://github.com/real2two/clawback",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/real2two/httpi.git",
+    "url": "git+https://github.com/real2two/clawback.git",
     "directory": "packages/client"
   },
   "bugs": {
-    "url": "https://github.com/real2two/httpi/issues"
-  },
-  "dependencies": {
-    "discord-api-types": "^0.37.119"
+    "url": "https://github.com/real2two/clawback/issues"
   },
   "pnpm": {
     "ignoredBuiltDependencies": ["@biomejs/biome", "esbuild"]
