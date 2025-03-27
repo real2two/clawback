@@ -22,6 +22,6 @@ There is the concept of "entities" and "handlers".
 - An entity is the command or component data.
 - A handler is where you'd run your interaction execution code.
 
-```ts
-// wip I didn't finish this library yet
-```
+You can check out examples in the `/example` directory.
+
+There aren't proper documentations for this library as of now.
