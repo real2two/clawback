@@ -13,7 +13,9 @@ bun i clawback
 
 ## Documentation
 
-This is still a bare-bones library, so expect breaking changes!
+This is still a bare-bones prototype, so expect breaking changes!
+
+Also, the source code is a mess. It's terrible. Please don't read my code.
 
 There is the concept of "entities" and "handlers".
 

@@ -1,0 +1,17 @@
+{
+  "name": "example",
+  "main": "./src/index.js",
+  "scripts": {
+    "start": "bun .",
+    "dev": "bun . --watch",
+    "register": "bun tools/registerCommands.ts"
+  },
+  "dependencies": {
+    "discord-api-types": "^0.37.119",
+    "discord-interactions": "^4.1.1",
+    "hono": "^4.7.5"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.8"
+  }
+}

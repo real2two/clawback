@@ -1,6 +1,14 @@
 import type { ApplicationCommandOptionType } from "discord-api-types/v10";
 import type { createOption, createSubcommandOption, createSubcommandGroupOption } from "../utils/createOption";
 
+export interface OptionParent {
+  parent?: OptionParent;
+  type: number;
+  data: {
+    name?: string;
+  };
+}
+
 export interface SubcommandBuilder {
   subcommand: ReturnType<typeof createSubcommandOption>;
 }

@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType, ApplicationCommandType, ApplicationIntegrationType, InteractionContextType } from "discord-api-types/v10";
 import { createOption, createSubcommandGroupOption, createSubcommandOption } from "./createOption";
-import { InteractionEntity, InteractionEntityType } from "../structures/InteractionEntity";
+import { EntityCommand } from "../structures/Entity";
 import type { LocalizationMap, RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types/v10";
 import type { SubcommandAndGroupBuilder, SubcommandAndGroup, OptionBuilder, Option } from "../types/options";
 
@@ -21,18 +21,50 @@ type SubcommandGroupKeys<T> = {
 }[keyof T];
 
 export function createCommand<T extends ApplicationCommandType>(type: T) {
-  return class Command<O extends Record<string, Option> = {}, S extends Record<string, SubcommandAndGroup> = {}> extends InteractionEntity {
+  type CommandConstructor<O extends Record<string, Option> = {}, S extends Record<string, SubcommandAndGroup> = {}> = {
+    name: Command["data"]["name"];
+    name_localizations?: Command["data"]["name_localizations"];
+    description?: Command["data"]["description"];
+    description_localizations?: Command["data"]["description_localizations"];
+    default_member_permissions?: Command["data"]["default_member_permissions"];
+    nsfw?: Command["data"]["nsfw"];
+    integration_types?: Command["data"]["integration_types"];
+    contexts?: Command["data"]["contexts"];
+  } & (
+    | (T extends ApplicationCommandType.ChatInput
+        ?
+            | {
+                type?: T;
+                options?: (opt: OptionBuilder) => O;
+                subcommands?: undefined;
+              }
+            | {
+                type?: T;
+                options?: undefined;
+                subcommands?: (opt: SubcommandAndGroupBuilder) => S;
+              }
+        : never)
+    | {
+        type?: ApplicationCommandType;
+        options?: undefined;
+        subcommands?: undefined;
+      }
+  );
+
+  class Command<O extends Record<string, Option> = {}, S extends Record<string, SubcommandAndGroup> = {}> extends EntityCommand {
     type = type;
-    name: string;
-    name_localizations?: LocalizationMap;
-    description: string;
-    description_localizations?: LocalizationMap;
+    data: {
+      name: string;
+      name_localizations?: LocalizationMap;
+      description?: string;
+      description_localizations?: LocalizationMap;
+      default_member_permissions?: string;
+      nsfw?: boolean;
+      integration_types?: ApplicationIntegrationType[];
+      contexts?: InteractionContextType[];
+    };
     options?: O;
     subcommands?: S;
-    default_member_permissions?: string;
-    nsfw?: boolean;
-    integration_types?: ApplicationIntegrationType[];
-    contexts?: InteractionContextType[];
 
     constructor({
       name,
@@ -45,61 +77,39 @@ export function createCommand<T extends ApplicationCommandType>(type: T) {
       nsfw = false,
       integration_types = [ApplicationIntegrationType.GuildInstall],
       contexts = [InteractionContextType.Guild],
-    }: {
-      name: Command["name"];
-      name_localizations?: Command["name_localizations"];
-      description: Command["description"];
-      description_localizations?: Command["description_localizations"];
-      default_member_permissions?: Command["default_member_permissions"];
-      nsfw?: Command["nsfw"];
-      integration_types?: Command["integration_types"];
-      contexts?: Command["contexts"];
-    } & (
-      | (T extends ApplicationCommandType.ChatInput
-          ?
-              | {
-                  type?: T;
-                  options?: (opt: OptionBuilder) => O;
-                  subcommands?: undefined;
-                }
-              | {
-                  type?: T;
-                  options?: undefined;
-                  subcommands?: (opt: SubcommandAndGroupBuilder) => S;
-                }
-          : never)
-      | {
-          type?: ApplicationCommandType;
-          options?: undefined;
-          subcommands?: undefined;
-        }
-    )) {
-      super(InteractionEntityType.Command);
+    }: CommandConstructor<O, S>) {
+      super();
 
-      this.name = name;
-      this.name_localizations = name_localizations;
-      this.description = description;
-      this.description_localizations = description_localizations;
-      this.default_member_permissions = default_member_permissions;
-      this.nsfw = nsfw;
-      this.integration_types = integration_types;
-      this.contexts = contexts;
+      if (type !== ApplicationCommandType.ChatInput && (description || description_localizations)) {
+        throw new Error("Application commands that aren't chat input commands cannot have a description!");
+      }
 
-      // Parse options and subcommands
+      this.data = {
+        name,
+        name_localizations,
+        description: type === ApplicationCommandType.ChatInput ? "No description has been set." : undefined,
+        description_localizations,
+        default_member_permissions,
+        nsfw,
+        integration_types,
+        contexts,
+      };
+
       this.options = options?.({
-        attachment: createOption(ApplicationCommandOptionType.Attachment),
-        boolean: createOption(ApplicationCommandOptionType.Boolean),
-        channel: createOption(ApplicationCommandOptionType.Channel),
-        integer: createOption(ApplicationCommandOptionType.Integer),
-        mentionable: createOption(ApplicationCommandOptionType.Mentionable),
-        number: createOption(ApplicationCommandOptionType.Number),
-        role: createOption(ApplicationCommandOptionType.Role),
-        string: createOption(ApplicationCommandOptionType.String),
-        user: createOption(ApplicationCommandOptionType.User),
+        attachment: createOption(this, ApplicationCommandOptionType.Attachment),
+        boolean: createOption(this, ApplicationCommandOptionType.Boolean),
+        channel: createOption(this, ApplicationCommandOptionType.Channel),
+        integer: createOption(this, ApplicationCommandOptionType.Integer),
+        mentionable: createOption(this, ApplicationCommandOptionType.Mentionable),
+        number: createOption(this, ApplicationCommandOptionType.Number),
+        role: createOption(this, ApplicationCommandOptionType.Role),
+        string: createOption(this, ApplicationCommandOptionType.String),
+        user: createOption(this, ApplicationCommandOptionType.User),
       });
+
       this.subcommands = subcommands?.({
-        subcommand: createSubcommandOption(),
-        group: createSubcommandGroupOption(),
+        subcommand: createSubcommandOption(this),
+        group: createSubcommandGroupOption(this),
       });
 
       // Disallow having both options and subcommands
@@ -132,18 +142,21 @@ export function createCommand<T extends ApplicationCommandType>(type: T) {
     serialize(): RESTPostAPIApplicationCommandsJSONBody {
       return {
         type: this.type,
-        name: this.name,
-        name_localizations: this.name_localizations,
-        description: this.description,
-        description_localizations: this.description_localizations,
+        name: this.data.name,
+        name_localizations: this.data.name_localizations,
+        description: (this.type === ApplicationCommandType.ChatInput ? this.data.description : undefined) as string, // Needs to be a string for application commands. Doesn't exist in context commands.
+        description_localizations: this.data.description_localizations,
         options: Object.values(this.options || this.subcommands || {})
           .map((o) => o.serialize())
           .sort((a, b) => Number(b.required || false) - Number(a.required || false)),
-        default_member_permissions: this.default_member_permissions,
-        nsfw: this.nsfw,
-        integration_types: this.integration_types,
-        contexts: this.contexts,
+        default_member_permissions: this.data.default_member_permissions,
+        nsfw: this.data.nsfw,
+        integration_types: this.data.integration_types,
+        contexts: this.data.contexts,
       };
     }
-  };
+  }
+
+  return <O extends Record<string, Option> = {}, S extends Record<string, SubcommandAndGroup> = {}>(data: CommandConstructor<O, S>) =>
+    new Command<O, S>(data);
 }

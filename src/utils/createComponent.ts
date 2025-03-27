@@ -1,11 +1,15 @@
-import { InteractionEntity, InteractionEntityType } from "../structures/InteractionEntity";
+import { EntityComponent } from "../structures/Entity";
 
 export function createComponent() {
-  return class Component extends InteractionEntity {
+  type ComponentConstructor = { customId: Component["customId"] };
+
+  class Component extends EntityComponent {
     customId: string | RegExp;
-    constructor({ customId }: { customId: Component["customId"] }) {
-      super(InteractionEntityType.Component);
+    constructor({ customId }: ComponentConstructor) {
+      super();
       this.customId = customId;
     }
-  };
+  }
+
+  return (data: ComponentConstructor) => new Component(data);
 }

@@ -1,9 +1,9 @@
-import { InteractionEntity } from "./InteractionEntity";
+import { EntityCommand, EntitySubcommand, EntityComponent } from "./Entity";
 
-export class InteractionHandler<D = undefined, A = undefined> {
-  entities: InteractionEntity[];
+export class InteractionHandler<E = undefined, A = undefined> {
+  entities: (EntityCommand | EntitySubcommand | EntityComponent)[];
 
-  execute?: (data: D) => unknown | Promise<unknown>;
+  execute?: (data: E) => unknown | Promise<unknown>;
   autocomplete?: (data: A) => unknown | Promise<unknown>;
 
   constructor({
@@ -11,17 +11,17 @@ export class InteractionHandler<D = undefined, A = undefined> {
     execute,
     autocomplete,
   }: {
-    entities: InteractionEntity[];
-    execute?: InteractionHandler<D, A>["execute"];
-    autocomplete?: InteractionHandler<D, A>["autocomplete"];
+    entities: InteractionHandler<E, A>["entities"];
+    execute?: InteractionHandler<E, A>["execute"];
+    autocomplete?: InteractionHandler<E, A>["autocomplete"];
   }) {
     this.entities = entities;
     this.execute = execute;
     this.autocomplete = autocomplete;
 
-    for (const interaction of this.entities) {
-      if (!(interaction instanceof InteractionEntity)) {
-        throw new Error("Only provide commands and components in interaction for InteractionHandler!");
+    for (const entity of this.entities) {
+      if (!(entity instanceof EntityCommand) && !(entity instanceof EntitySubcommand) && !(entity instanceof EntityComponent)) {
+        throw new Error("Only provide commands, subcommands and components in interaction for InteractionHandler!");
       }
     }
   }
