@@ -1,4 +1,4 @@
-import { InteractionHandler } from "../../../";
+import { InteractionHandler } from "clawback";
 import type { Context } from "hono";
 import type { APIApplicationCommandAutocompleteResponse, APIBaseInteraction, APIInteractionResponse, InteractionType } from "discord-api-types/v10";
 

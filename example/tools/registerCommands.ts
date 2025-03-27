@@ -1,5 +1,5 @@
 import env from "../src/utils/env";
-import { registerCommands } from "../../";
+import { registerCommands } from "clawback";
 import * as entities from "../src/entities";
 
 const res = await registerCommands({

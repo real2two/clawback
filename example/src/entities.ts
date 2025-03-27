@@ -1,4 +1,4 @@
-import { d } from "../../";
+import { d } from "clawback";
 
 export const exampleCommand = d.command({
   name: "example_command",
