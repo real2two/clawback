@@ -1,8 +1,8 @@
 import env from "./utils/env";
 import { Hono } from "hono";
-import { InteractionResponseType, verifyKey } from "discord-interactions";
+import { verifyKey } from "discord-interactions";
 import { clawback } from "./handlers";
-import { InteractionType } from "discord-api-types/v10";
+import { InteractionType, InteractionResponseType } from "discord-api-types/v10";
 import type { APIBaseInteraction, APIInteractionResponse } from "discord-api-types/v10";
 
 const app = new Hono();
@@ -18,7 +18,7 @@ app.post("/interactions", async (c) => {
   }
 
   const interaction = JSON.parse(body) as APIBaseInteraction<InteractionType, any>;
-  if (interaction.type === InteractionType.Ping) return c.json({ type: InteractionResponseType.PONG });
+  if (interaction.type === InteractionType.Ping) return c.json({ type: InteractionResponseType.Pong });
 
   return new Promise(async (resolve) => {
     let resolved = false;
