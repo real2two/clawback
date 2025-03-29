@@ -1,6 +1,6 @@
 {
   "name": "clawback",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A new type of interaction command handler for Discord bots.",
   "author": "Two",
   "main": "./dist/index.cjs",
