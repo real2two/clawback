@@ -1,6 +1,6 @@
 {
   "name": "clawback",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A new type of interaction command handler for Discord bots.",
   "author": "Two",
   "main": "./dist/index.cjs",
@@ -9,7 +9,7 @@
   "scripts": {
     "build": "unbuild",
     "format": "biome format --write ./",
-    "pub": "changeset version && changeset publish"
+    "pub": "bun run build && changeset version && changeset publish"
   },
   "files": ["dist", "package.json"],
   "exports": {
