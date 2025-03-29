@@ -4,7 +4,7 @@
     "": {
       "name": "example",
       "dependencies": {
-        "clawback": "^0.0.0",
+        "clawback": "^0.0.1",
         "discord-api-types": "^0.37.119",
         "discord-interactions": "^4.1.1",
         "hono": "^4.7.5",
@@ -85,7 +85,7 @@
 
     "ci-info": ["ci-info@3.9.0", "", {}, "sha512-NIxF55hv4nSqQswkAeiOi1r83xy8JldOFDTWiug55KBu9Jnblncd2U6ViHmYgHf01TPZS77NJBhBMKdWj9HQMQ=="],
 
-    "clawback": ["clawback@0.0.0", "", { "dependencies": { "@changesets/cli": "^2.28.1", "discord-api-types": "^0.37.119" } }, "sha512-q/cjTpualXHNFGl9fZjMLQARrpThZxrNCBp+UcUuphZbv97nEkgNKcL2b7itT1RXWvaJ40ZHm+5Dv4e/5tLY/A=="],
+    "clawback": ["clawback@0.0.1", "", { "dependencies": { "@changesets/cli": "^2.28.1", "discord-api-types": "^0.37.119" } }, "sha512-RI7gDVdZo7dUiwABFeQS2lqjWyKjaBPc0MIn6iMk46qFl1Ma31FBqSeh6X3vQ5NW+4dV70qjx++VjB6wYFT9gw=="],
 
     "cross-spawn": ["cross-spawn@7.0.6", "", { "dependencies": { "path-key": "^3.1.0", "shebang-command": "^2.0.0", "which": "^2.0.1" } }, "sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA=="],
 
