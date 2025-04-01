@@ -1,7 +1,7 @@
 import type { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types/v10";
 
 export function registerCommands({
-  baseApi = "https://discord.com",
+  baseApi = "https://discord.com/api/v10",
   id,
   guildId,
   token,
@@ -14,7 +14,7 @@ export function registerCommands({
   entities: ({ serialize?: () => RESTPostAPIApplicationCommandsJSONBody } | {})[];
 }) {
   return fetch(
-    `${new URL(baseApi).href.slice(0, -1)}/api/applications/${encodeURIComponent(id)}${guildId ? `/guilds/${encodeURIComponent(guildId)}/commands` : `/commands`}`,
+    `${new URL(baseApi).href}/applications/${encodeURIComponent(id)}${guildId ? `/guilds/${encodeURIComponent(guildId)}/commands` : `/commands`}`,
     {
       method: "put",
       headers: {
